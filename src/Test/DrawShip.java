@@ -1,10 +1,7 @@
 package Test;
 
 import Util.GDV5;
-import gameObject.Bullet;
-import gameObject.Particle;
-import gameObject.Ship;
-import gameObject.Star;
+import gameObject.*;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -22,9 +19,10 @@ public class DrawShip extends GDV5 {
 	GameState g=GameState.MENU;
 
 	boolean re=false;
-	public ArrayList<Particle> parts = new ArrayList<Particle>();
-	public ArrayList<Star> stars = new ArrayList<Star>();
-	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+	public ArrayList<Particle> parts = new ArrayList<>();
+	public ArrayList<Star> stars = new ArrayList<>();
+	public ArrayList<Bullet> bullets = new ArrayList<>();
+	public ArrayList<Enemy> fallingEnemies = new ArrayList<>();
 	Rectangle2D.Double menu[]=new Rectangle2D.Double[3];
 	int score=0;
 
@@ -102,6 +100,27 @@ public class DrawShip extends GDV5 {
 		addBullets();
 		}
 
+		private void addFallingEnemies(){
+		double fallingEnemySize = 5;
+		if(Star.r.nextFloat()<0.1){
+			fallingEnemies.add(new Enemy(Star.r.nextInt((int)(this.getWidth()-fallingEnemySize)),0,0,-5, fallingEnemySize));
+			}
+		}
+
+		private void updateFallingEnemies(){
+			for(Enemy e:
+			    fallingEnemies) {
+				e.update();
+			}
+		}
+
+	private void drawFallingEnemies(Graphics2D win){
+		for(Enemy e:
+				fallingEnemies) {
+			e.drawBound(win,Color.RED);
+		}
+	}
+
 	public void moveParts(){
 		for(Particle i:
 		    parts) {
@@ -112,7 +131,6 @@ public class DrawShip extends GDV5 {
 			i.update();
 		}
 	}
-
 
 
 	public void moveStars(){
@@ -182,6 +200,10 @@ public class DrawShip extends GDV5 {
 		if(g.equals(GameState.MENU)){
 			checkMenuTiles();
 		}
+		else{
+			addFallingEnemies();
+			updateFallingEnemies();
+		}
 	}
 
 	@Override
@@ -202,9 +224,10 @@ public class DrawShip extends GDV5 {
 			win.drawString("PLAY",134,286);
 			//System.out.println(Arrays.toString(s.xpoints));
 		}
-		else if(!g.equals(GameState.MENU)){
+		else {
 			exitCheck();
 			drawScore(win,Color.GREEN);
+			drawFallingEnemies(win);
 		}
 	}
 }
