@@ -26,6 +26,7 @@ public class DrawShip extends GDV5 {
 	public ArrayList<Star> stars = new ArrayList<Star>();
 	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	Rectangle2D.Double menu[]=new Rectangle2D.Double[3];
+	int score=0;
 
 	Ship s;
 
@@ -57,9 +58,9 @@ public class DrawShip extends GDV5 {
 			s.angle += rotation;
 	}
 
-	private boolean thrustOn(){
-		return((GDV5.KeysPressed[KeyEvent.VK_A]||GDV5.KeysPressed[KeyEvent.VK_W]||GDV5.KeysPressed[KeyEvent.VK_D])
-				&&!GDV5.KeysPressed[KeyEvent.VK_S]);
+	private void exitCheck(){
+		if(GDV5.KeysPressed[KeyEvent.VK_ESCAPE])
+			g=GameState.MENU;
 	}
 
 	public void addBullets(){
@@ -149,6 +150,12 @@ public class DrawShip extends GDV5 {
 		}
 	}
 
+	private void drawScore(Graphics2D win, Color c){
+		win.setColor(c);
+		win.setFont(new Font("TREBUCHET MS",Font.PLAIN,15));
+		win.drawString("Score: "+score,5,20);
+	}
+
 	public void checkMenuTiles(){
 		for(Bullet i:
 		    bullets) {
@@ -194,6 +201,10 @@ public class DrawShip extends GDV5 {
 			win.setFont(new Font("GOST COMMON",Font.PLAIN,100));
 			win.drawString("PLAY",134,286);
 			//System.out.println(Arrays.toString(s.xpoints));
+		}
+		else if(!g.equals(GameState.MENU)){
+			exitCheck();
+			drawScore(win,Color.GREEN);
 		}
 	}
 }

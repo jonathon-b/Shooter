@@ -16,8 +16,8 @@ public class Particle extends Rectangle2D.Double {
 		this.y=y;
 		this.width=size;
 		this.height=size;
-		this.dy=2*Math.cos(angle)+distribution*r.nextGaussian();
-		this.dx=2*-Math.sin(angle)+distribution*r.nextGaussian();
+		this.dy=2*Math.cos(angle)+distribution*Math.abs(r.nextGaussian());
+		this.dx=2*-Math.sin(angle)+distribution*Math.abs(r.nextGaussian());
 	}
 
 	public boolean kill(){
