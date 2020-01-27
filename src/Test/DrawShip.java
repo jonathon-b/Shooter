@@ -22,7 +22,7 @@ public class DrawShip extends GDV5 {
 	public ArrayList<Particle> parts = new ArrayList<>();
 	public ArrayList<Star> stars = new ArrayList<>();
 	public ArrayList<Bullet> bullets = new ArrayList<>();
-	public ArrayList<Enemy> fallingEnemies = new ArrayList<>();
+	public ArrayList<Enemy> enemies = new ArrayList<>();
 	Rectangle2D.Double menu[]=new Rectangle2D.Double[3];
 	int score=0;
 
@@ -102,21 +102,21 @@ public class DrawShip extends GDV5 {
 
 		private void addFallingEnemies(){
 		double fallingEnemySize = 5;
-		if(Star.r.nextFloat()<0.1){
-			fallingEnemies.add(new Enemy(Star.r.nextInt((int)(this.getWidth()-fallingEnemySize)),0,0,-5, fallingEnemySize));
+		if(Star.r.nextFloat()<0.025){
+			enemies.add(new Enemy(Star.r.nextInt((int)(this.getWidth()-fallingEnemySize)),0,0,5, fallingEnemySize));
 			}
 		}
 
-		private void updateFallingEnemies(){
+		private void updateEnemies(){
 			for(Enemy e:
-			    fallingEnemies) {
+			    enemies) {
 				e.update();
 			}
 		}
 
-	private void drawFallingEnemies(Graphics2D win){
+	private void drawEnemies(Graphics2D win){
 		for(Enemy e:
-				fallingEnemies) {
+				enemies) {
 			e.drawBound(win,Color.RED);
 		}
 	}
@@ -182,6 +182,15 @@ public class DrawShip extends GDV5 {
 		}
 	}
 
+	void shipCollisionCheck() {
+		for(Enemy e:
+		    enemies) {
+			if(this.collisionDirection(s.hitBox, e,e.dx,e.dy)!=0){
+				g=GameState.MENU;
+			}
+		}
+	}
+
 	public static void main(String[] args){
 		DrawShip d=new DrawShip();
 		d.start();
@@ -202,7 +211,7 @@ public class DrawShip extends GDV5 {
 		}
 		else{
 			addFallingEnemies();
-			updateFallingEnemies();
+			updateEnemies();
 		}
 	}
 
@@ -227,7 +236,7 @@ public class DrawShip extends GDV5 {
 		else {
 			exitCheck();
 			drawScore(win,Color.GREEN);
-			drawFallingEnemies(win);
+			drawEnemies(win);
 		}
 	}
 }

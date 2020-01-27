@@ -30,7 +30,7 @@ public class Ship extends Polygon{
 	public Rectangle2D.Double[] gun= new Rectangle2D.Double[2];
 	double maxWidth,maxHeight;
 	public double angle = 0;
-	private Rectangle2D.Double hitBox;
+	public Rectangle2D.Double hitBox;
 	private Double minX,minY,maxX,maxY;
 	private Color[] rotatedColors = {Color.LIGHT_GRAY,Color.YELLOW,Color.YELLOW,Color.GRAY};
 	private Shape[] rotated=new Shape[4];
