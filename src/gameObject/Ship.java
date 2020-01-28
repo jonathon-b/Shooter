@@ -26,6 +26,7 @@ public class Ship extends Polygon{
 	private double aHeight=2,aWidth=2,aX=2,aY=0;
 	public static final double baseVel=6;
 	public double dx=0,dy=0;
+	public int lives;
 	double intScale=5;
 	public Rectangle2D.Double[] gun= new Rectangle2D.Double[2];
 	double maxWidth,maxHeight;
@@ -35,8 +36,9 @@ public class Ship extends Polygon{
 	private Color[] rotatedColors = {Color.LIGHT_GRAY,Color.YELLOW,Color.YELLOW,Color.GRAY};
 	private Shape[] rotated=new Shape[4];
 
-	public Ship(double scale, double maxHeight, double maxWidth, double xOffset, double yOffset){
+	public Ship(double scale, double maxHeight, double maxWidth, double xOffset, double yOffset, int lives){
 		super(placeholder,placeholder,placeholder.length);
+		this.lives=lives;
 		internalScale(scale);
 		this.intScale=scale;
 		this.maxHeight=maxHeight;
@@ -46,6 +48,10 @@ public class Ship extends Polygon{
 		makeArc();
 		makeGun();
 		hitBox=new Rectangle2D.Double();
+	}
+
+	public boolean isAlive(){
+		return this.lives>0;
 	}
 
 	public void offset(double x, double y){

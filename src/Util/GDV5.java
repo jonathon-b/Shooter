@@ -180,19 +180,24 @@ public abstract class GDV5 extends Canvas implements Runnable, KeyListener {
 	 * object that is moving dx = projectile's x displacement dy = projectile's y
 	 * displacement
 	 */
+	public boolean collides(Rectangle2D stationary, Rectangle2D projectile) {
+		if(projectile.getMaxY()>=stationary.getY()&&projectile.getY()<=stationary.getMaxY()&&projectile.getMaxX()>=stationary.getX()&&projectile.getX()<=stationary.getMaxX())
+			return true;
+	return false;
+	}
 
-	public int collisionDirection(Rectangle2D stationary, Rectangle2D projectile, double dx, double dy) { //1 is projectile hits from below
+	public int collisionDirection(Rectangle2D stationary, Rectangle2D projectile, double pdx, double pdy,double sdx, double sdy) { //1 is projectile hits from below
 
 		//bottom
-		if(projectile.getY()+dy<=stationary.getMaxY()&&projectile.getY()>stationary.getMaxY()&&projectile.getX()<stationary.getMaxX()&&projectile.getMaxX()>stationary.getX())
+		if(projectile.getY()+pdy<=stationary.getMaxY()+sdy&&projectile.getY()>stationary.getMaxY()&&projectile.getX()+pdx<stationary.getMaxX()+sdx&&projectile.getMaxX()+pdx>stationary.getX()+sdx)
 			return 1;
 		//top
-		if(projectile.getMaxY()+dy>=stationary.getY()&&projectile.getMaxY()<stationary.getY()&&projectile.getX()<stationary.getMaxX()&&projectile.getMaxX()>stationary.getX())
+		if(projectile.getMaxY()+pdy>=stationary.getY()+sdy&&projectile.getMaxY()<stationary.getY()&&projectile.getX()+pdx<stationary.getMaxX()+sdx&&projectile.getMaxX()+sdx>stationary.getX()+sdx)
 			return 2;
 		//left
-		if(projectile.getMaxX()+dx>=stationary.getX()&&projectile.getMaxX()<stationary.getX()&&projectile.getY()<stationary.getMaxY()&&projectile.getMaxY()>stationary.getY())
+		if(projectile.getMaxX()+pdx>=stationary.getX()+pdx&&projectile.getMaxX()<stationary.getX()&&projectile.getY()+pdy<stationary.getMaxY()+sdy&&projectile.getMaxY()+pdy>stationary.getY()+sdy)
 			return 3;
-		if(projectile.getX()+dx<=stationary.getMaxX()&&projectile.getX()>stationary.getMaxX()&&projectile.getY()<stationary.getMaxY()&&projectile.getMaxY()>stationary.getY())
+		if(projectile.getX()+pdx<=stationary.getMaxX()+sdx&&projectile.getX()>stationary.getMaxX()&&projectile.getY()+pdy<stationary.getMaxY()+sdy&&projectile.getMaxY()+pdy>stationary.getY()+sdy)
 			return 4;
 			return 0;
 

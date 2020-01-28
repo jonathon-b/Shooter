@@ -29,7 +29,7 @@ public class DrawShip extends GDV5 {
 	Ship s;
 
 	public DrawShip(){
-		 s= new Ship(7,720,1280,300,300);
+		 s= new Ship(7,720,1280,300,300,3);
 		 menu[0]= new Rectangle2D.Double(100,200,300,100);
 		 menu[1]= new Rectangle2D.Double();
 		 menu[2]= new Rectangle2D.Double();
@@ -56,9 +56,16 @@ public class DrawShip extends GDV5 {
 			s.angle += rotation;
 	}
 
+	private void returnToMenu(){
+		s.lives=3;
+		g=GameState.MENU;
+		enemies.clear();
+	}
+
 	private void exitCheck(){
-		if(GDV5.KeysPressed[KeyEvent.VK_ESCAPE])
-			g=GameState.MENU;
+		if(GDV5.KeysPressed[KeyEvent.VK_ESCAPE]) {
+			returnToMenu();
+		}
 	}
 
 	public void addBullets(){
@@ -177,7 +184,7 @@ public class DrawShip extends GDV5 {
 	public void checkMenuTiles(){
 		for(Bullet i:
 		    bullets) {
-				if(this.collisionDirection(menu[0], i, i.dx, i.dy)!=0)
+				if(this.collisionDirection(menu[0], i, i.dx, i.dy,0,0)!=0)
 					g=GameState.LEVEL1;
 		}
 	}
@@ -185,10 +192,13 @@ public class DrawShip extends GDV5 {
 	void shipCollisionCheck() {
 		for(Enemy e:
 		    enemies) {
-			if(this.collisionDirection(s.hitBox, e,e.dx,e.dy)!=0){
-				g=GameState.MENU;
+			if(this.collides(s.hitBox, e)){
+				e.kill=true;
+				if(s.isAlive()){s.lives--;}
 			}
 		}
+		enemies.removeIf(Enemy::isDead);
+		if(!s.isAlive()){returnToMenu();}
 	}
 
 	public static void main(String[] args){
@@ -212,6 +222,7 @@ public class DrawShip extends GDV5 {
 		else{
 			addFallingEnemies();
 			updateEnemies();
+			shipCollisionCheck();
 		}
 	}
 
@@ -231,7 +242,6 @@ public class DrawShip extends GDV5 {
 			drawMenu(win);
 			win.setFont(new Font("GOST COMMON",Font.PLAIN,100));
 			win.drawString("PLAY",134,286);
-			//System.out.println(Arrays.toString(s.xpoints));
 		}
 		else {
 			exitCheck();
