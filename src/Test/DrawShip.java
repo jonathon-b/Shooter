@@ -178,7 +178,8 @@ public class DrawShip extends GDV5 {
 	private void drawScore(Graphics2D win, Color c){
 		win.setColor(c);
 		win.setFont(new Font("TREBUCHET MS",Font.PLAIN,15));
-		win.drawString("Score: "+score,5,20);
+		win.drawString("Lives: " + s.lives,5,20);
+		win.drawString("Score: " +score,5,40);
 	}
 
 	public void checkMenuTiles(){
