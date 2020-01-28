@@ -1,6 +1,7 @@
 package Test;
 
 import Util.GDV5;
+import Util.SoundDriverHo;
 import gameObject.*;
 
 import java.awt.*;
@@ -24,12 +25,16 @@ public class DrawShip extends GDV5 {
 	public ArrayList<Bullet> bullets = new ArrayList<>();
 	public ArrayList<Enemy> enemies = new ArrayList<>();
 	Rectangle2D.Double menu[]=new Rectangle2D.Double[3];
+	String sounds[]={"laser.wav"};
+	SoundDriverHo sd;
 	int score=0;
 
 	Ship s;
 
 	public DrawShip(){
 		 s= new Ship(7,720,1280,300,300,3);
+
+		 sd=new SoundDriverHo(sounds,this);
 		 menu[0]= new Rectangle2D.Double(100,200,300,100);
 		 menu[1]= new Rectangle2D.Double();
 		 menu[2]= new Rectangle2D.Double();
