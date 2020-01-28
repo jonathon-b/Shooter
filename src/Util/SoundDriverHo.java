@@ -1,4 +1,4 @@
-package util;
+package Util;
 
 import java.awt.Canvas;
 import java.io.BufferedInputStream;
