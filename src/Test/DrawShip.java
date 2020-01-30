@@ -25,7 +25,7 @@ public class DrawShip extends GDV5 {
 	public ArrayList<Bullet> bullets = new ArrayList<>();
 	public ArrayList<Enemy> enemies = new ArrayList<>();
 	Rectangle2D.Double menu[]=new Rectangle2D.Double[3];
-	String sounds[]={"laser.wav"};
+	String sounds[]=new String[1];
 	SoundDriverHo sd;
 	int score=0;
 
@@ -33,7 +33,7 @@ public class DrawShip extends GDV5 {
 
 	public DrawShip(){
 		 s= new Ship(7,720,1280,300,300,3);
-
+		 sounds[0]="laser.wav";
 		 sd=new SoundDriverHo(sounds,this);
 		 menu[0]= new Rectangle2D.Double(100,200,300,100);
 		 menu[1]= new Rectangle2D.Double();
@@ -85,6 +85,7 @@ public class DrawShip extends GDV5 {
 				}
 				bullets.add(new Bullet(s.rotatedGun[0], 3, Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s));
 				bullets.add(new Bullet(s.rotatedGun[1], 3, Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s));
+				if(!sd.isPlaying(0))sd.play(0);
 			re=true;
 		}
 		else if(!GDV5.KeysPressed[KeyEvent.VK_SPACE]){
@@ -100,8 +101,8 @@ public class DrawShip extends GDV5 {
 
 		if(true) {
 			for(int i = 0; i < numParts; i++) {
-				parts.add(new Particle(s.rotatedThrust[0].x, s.rotatedThrust[0].y, size, maxMovement, s.angle, distribution));
-				parts.add(new Particle(s.rotatedThrust[1].x, s.rotatedThrust[1].y, size, maxMovement, s.angle, distribution));
+				parts.add(new Thruster(s.rotatedThrust[0].x, s.rotatedThrust[0].y, size, maxMovement, s.angle, distribution));
+				parts.add(new Thruster(s.rotatedThrust[1].x, s.rotatedThrust[1].y, size, maxMovement, s.angle, distribution));
 			}
 		}
 
@@ -203,7 +204,7 @@ public class DrawShip extends GDV5 {
 				if(s.isAlive()){s.lives--;}
 			}
 		}
-		enemies.removeIf(Enemy::isDead);
+		enemies.removeIf(e -> e.isDead());
 		if(!s.isAlive()){returnToMenu();}
 	}
 
