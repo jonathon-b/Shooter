@@ -10,6 +10,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class DrawShip extends GDV5 {
 
@@ -19,20 +20,30 @@ public class DrawShip extends GDV5 {
 
 	GameState g=GameState.MENU;
 
+	static Random r = new Random();
 	boolean re=false;
+	public static ArrayList<ExplosionArray> Explosions = new ArrayList<>();
 	public ArrayList<Particle> parts = new ArrayList<>();
 	public ArrayList<Star> stars = new ArrayList<>();
 	public ArrayList<Bullet> bullets = new ArrayList<>();
 	public ArrayList<Enemy> enemies = new ArrayList<>();
 	Rectangle2D.Double menu[]=new Rectangle2D.Double[3];
 	String sounds[]=new String[1];
+	int transX=0,transY=0;
+	static int rumbleCount=0;
+	static int rumbleX[]=new int[30];
+	static int rumbleY[]=new int[30];
 	SoundDriverHo sd;
 	int score=0;
 
 	Ship s;
 
 	public DrawShip(){
-		 s= new Ship(7,720,1280,300,300,3);
+		for(int i=0;i<rumbleX.length;i++)
+			rumbleX[i]=0;
+		for(int i=0;i<rumbleY.length;i++)
+			rumbleY[i]=0;
+		 s= new Ship(7,720,1280,1280/2+5,720,3);
 		 sounds[0]="laser.wav";
 		 sd=new SoundDriverHo(sounds,this);
 		 menu[0]= new Rectangle2D.Double(100,200,300,100);
@@ -60,6 +71,25 @@ public class DrawShip extends GDV5 {
 		if(GDV5.KeysPressed[KeyEvent.VK_D])
 			s.angle += rotation;
 	}
+
+	public static void addRumble(int bound){
+		for(int i=0;i<rumbleX.length;i++){
+			rumbleX[0]=r.nextInt(bound);
+			rumbleY[0]=r.nextInt(bound);
+		}
+		rumbleCount=0;
+	}
+
+	public void updateRumble(){
+		if(rumbleCount<rumbleX.length) {
+			transX=rumbleX[rumbleCount];
+			transY=rumbleY[rumbleCount];
+		}
+		else {
+			transX = rumbleX[rumbleCount];
+			transY = rumbleY[rumbleCount];
+		}
+		}
 
 	private void returnToMenu(){
 		s.lives=3;
@@ -200,12 +230,27 @@ public class DrawShip extends GDV5 {
 		for(Enemy e:
 		    enemies) {
 			if(this.collides(s.hitBox, e)){
-				e.kill=true;
+				e.killEnemy(e.getX(),e.getY());
 				if(s.isAlive()){s.lives--;}
 			}
 		}
 		enemies.removeIf(e -> e.isDead());
 		if(!s.isAlive()){returnToMenu();}
+	}
+
+	public void updateExplosions(){
+		for(ExplosionArray e:
+				Explosions) {
+			e.update();
+		}
+	}
+
+
+	public void drawExplosions(Graphics2D win, Color c){
+		for(ExplosionArray e:
+				Explosions) {
+			e.fill(win, c);
+		}
 	}
 
 	public static void main(String[] args){
@@ -220,9 +265,11 @@ public class DrawShip extends GDV5 {
 		addParts(); //also adds stars
 		moveParts();
 		moveStars();
+		updateExplosions();
 		stars.removeIf(Star::kill);
 		parts.removeIf(Particle::kill);
 		bullets.removeIf(Bullet::kill);
+		Explosions.removeIf(ExplosionArray::kill);
 		if(g.equals(GameState.MENU)){
 			checkMenuTiles();
 		}
@@ -238,7 +285,9 @@ public class DrawShip extends GDV5 {
 		drawStars(win);
 		drawParts(win);
 		drawBullets(win);
+		drawExplosions(win, Color.GREEN);
 		s.fill(win);
+		win.translate(transX,transY);
 		if(g.equals(GameState.MENU)){
 			win.setFont(new Font("GOST COMMON",Font.PLAIN,100));
 			win.setColor(Color.WHITE);
