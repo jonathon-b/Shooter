@@ -28,24 +28,27 @@ public class DrawShip extends GDV5 {
 	public ArrayList<Bullet> bullets = new ArrayList<>();
 	public ArrayList<Enemy> enemies = new ArrayList<>();
 	Rectangle2D.Double menu[]=new Rectangle2D.Double[3];
-	String sounds[]=new String[1];
+	String sounds[]=new String[2];
 	int transX=0,transY=0;
 	static int rumbleCount=0;
-	static int rumbleX[]=new int[30];
-	static int rumbleY[]=new int[30];
-	SoundDriverHo sd;
+	final static int maxRumble=20;
+	static int rumbleX[]=new int[maxRumble], rumbleY[]=new int[maxRumble];
+	public static SoundDriverHo sd;
 	int score=0;
 
 	Ship s;
 
 	public DrawShip(){
-		for(int i=0;i<rumbleX.length;i++)
-			rumbleX[i]=0;
-		for(int i=0;i<rumbleY.length;i++)
-			rumbleY[i]=0;
+		for(int i=0;i<maxRumble;i++) {
+			rumbleX[i] = 0;
+			rumbleY[i] = 0;
+		}
 		 s= new Ship(7,720,1280,1280/2+5,720,3);
-		 sounds[0]="laser.wav";
+		 sounds[0]="jonathon_bower_laser.wav";
+		 sounds[1]="explosion.wav";
 		 sd=new SoundDriverHo(sounds,this);
+		 sd.setVolume(0,(float)0.05);
+		 sd.setVolume(1,6);
 		 menu[0]= new Rectangle2D.Double(100,200,300,100);
 		 menu[1]= new Rectangle2D.Double();
 		 menu[2]= new Rectangle2D.Double();
@@ -74,8 +77,8 @@ public class DrawShip extends GDV5 {
 
 	public static void addRumble(int bound){
 		for(int i=0;i<rumbleX.length;i++){
-			rumbleX[0]=r.nextInt(bound);
-			rumbleY[0]=r.nextInt(bound);
+			rumbleX[i]=r.nextInt(bound);
+			rumbleY[i]=r.nextInt(bound);
 		}
 		rumbleCount=0;
 	}
@@ -84,10 +87,11 @@ public class DrawShip extends GDV5 {
 		if(rumbleCount<rumbleX.length) {
 			transX=rumbleX[rumbleCount];
 			transY=rumbleY[rumbleCount];
+			rumbleCount++;
 		}
 		else {
-			transX = rumbleX[rumbleCount];
-			transY = rumbleY[rumbleCount];
+			transX = 0;
+			transY = 0;
 		}
 		}
 
@@ -143,12 +147,13 @@ public class DrawShip extends GDV5 {
 		addBullets();
 		}
 
-		private void addFallingEnemies(){
-		double fallingEnemySize = 5;
+		private void addAstroids(){
+		double asteroidSize = 5;
 		if(Star.r.nextFloat()<0.025){
-			enemies.add(new Enemy(Star.r.nextInt((int)(this.getWidth()-fallingEnemySize)),0,0,5, fallingEnemySize));
+			enemies.add(new Enemy(Star.r.nextInt((int)(this.getWidth()-asteroidSize)),0,0,5, asteroidSize));
 			}
 		}
+
 
 		private void updateEnemies(){
 			for(Enemy e:
@@ -211,6 +216,15 @@ public class DrawShip extends GDV5 {
 		}
 	}
 
+	private void addNormalEnemies(int num){
+		for(int i=0;i<num;i++) {
+			int width=10, height=5;
+			if(r.nextFloat()>0.9) {
+				enemies.add(new Enemy(r.nextInt(this.getWidth()-width),0,r.nextInt(5)-2,r.nextInt(7)+1,width));
+			}
+		}
+	}
+
 	private void drawScore(Graphics2D win, Color c){
 		win.setColor(c);
 		win.setFont(new Font("TREBUCHET MS",Font.PLAIN,15));
@@ -266,6 +280,7 @@ public class DrawShip extends GDV5 {
 		moveParts();
 		moveStars();
 		updateExplosions();
+		updateRumble();
 		stars.removeIf(Star::kill);
 		parts.removeIf(Particle::kill);
 		bullets.removeIf(Bullet::kill);
@@ -274,7 +289,8 @@ public class DrawShip extends GDV5 {
 			checkMenuTiles();
 		}
 		else{
-			addFallingEnemies();
+			addAstroids();
+			addNormalEnemies(1);
 			updateEnemies();
 			shipCollisionCheck();
 		}
@@ -282,12 +298,12 @@ public class DrawShip extends GDV5 {
 
 	@Override
 	public void draw(Graphics2D win) {
+		win.translate(transX,transY);
 		drawStars(win);
 		drawParts(win);
 		drawBullets(win);
 		drawExplosions(win, Color.GREEN);
 		s.fill(win);
-		win.translate(transX,transY);
 		if(g.equals(GameState.MENU)){
 			win.setFont(new Font("GOST COMMON",Font.PLAIN,100));
 			win.setColor(Color.WHITE);

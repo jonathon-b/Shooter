@@ -15,7 +15,9 @@ public class Enemy extends GameObject{
 	public void killEnemy(double x, double y){
 		this.kill=true;
 		DrawShip.Explosions.add(new ExplosionArray(x,y,3,20,40,4));
-		DrawShip.addRumble(5);
+		DrawShip.addRumble(15);
+		if(!DrawShip.sd.isPlaying(1))
+			DrawShip.sd.play(1);
 	}
 
 	public boolean isDead(){return kill;}
