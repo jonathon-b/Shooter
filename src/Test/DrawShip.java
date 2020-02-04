@@ -45,9 +45,9 @@ public class DrawShip extends GDV5 {
 		}
 		 s= new Ship(7,720,1280,1280/2+5,720,3);
 		 sounds[0]="jonathon_bower_laser.wav";
-		 sounds[1]="explosion.wav";
+		 sounds[1]="jonathon_bower_explosion.wav";
 		 sd=new SoundDriverHo(sounds,this);
-		 sd.setVolume(0,(float)0.05);
+		 sd.setVolume(0,(float)0.0005);
 		 sd.setVolume(1,6);
 		 menu[0]= new Rectangle2D.Double(100,200,300,100);
 		 menu[1]= new Rectangle2D.Double();
@@ -218,9 +218,9 @@ public class DrawShip extends GDV5 {
 
 	private void addNormalEnemies(int num){
 		for(int i=0;i<num;i++) {
-			int width=10, height=5;
-			if(r.nextFloat()>0.9) {
-				enemies.add(new Enemy(r.nextInt(this.getWidth()-width),0,r.nextInt(5)-2,r.nextInt(7)+1,width));
+			int size=40;
+			if(r.nextFloat()>0.99) {
+				enemies.add(new Enemy(r.nextInt(this.getWidth()-size),0,r.nextInt(5)-2,r.nextInt(7)+1,size));
 			}
 		}
 	}
