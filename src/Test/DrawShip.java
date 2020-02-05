@@ -247,7 +247,7 @@ public class DrawShip extends GDV5 {
 	void shipCollisionCheck() {
 		for(Enemy e:
 		    enemies) {
-			if(this.collides(s.hitBox, e)){
+			if(this.collisionDirection(s.hitBox, e,e.dx,e.dy,s.dx,s.dy)!=0){
 				e.killEnemy(e.getX(),e.getY());
 				if(s.isAlive()){s.lives--;}
 			}

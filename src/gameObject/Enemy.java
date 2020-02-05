@@ -13,8 +13,8 @@ public class Enemy extends GameObject{
 		super(x, y, dx, dy, size);
 	}
 
-	public void collisionCheck(Rectangle2D bullet){
-		if(GDV5.collides(this, bullet))
+	public void collisionCheck(Bullet bullet){
+		if(GDV5.collides(this,bullet))
 			this.killEnemy(this.getCenterX(),this.getCenterY());
 	}
 

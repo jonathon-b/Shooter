@@ -181,26 +181,12 @@ public abstract class GDV5 extends Canvas implements Runnable, KeyListener {
 	 * displacement
 	 */
 	public static boolean collides(Rectangle2D stationary, Rectangle2D projectile) {
-		if(projectile.getCenterY()>=stationary.getY()&&projectile.getCenterY()<=stationary.getMaxY()&&projectile.getCenterX()>=stationary.getX()&&projectile.getCenterX()<=stationary.getMaxX())
+				if(((projectile.getX()>=stationary.getX()&&projectile.getX()<=stationary.getMaxX())||
+				(projectile.getMaxX()<=stationary.getMaxX()&&projectile.getMaxX()>=stationary.getX()))&&(
+						(projectile.getY()>=stationary.getY()&&projectile.getY()<=stationary.getMaxY())||
+								(projectile.getMaxY()<=stationary.getMaxY()&&projectile.getMaxY()>=stationary.getMaxY())))
 			return true;
-	return false;
-	}
-
-	public int collisionDirection(Rectangle2D stationary, Rectangle2D projectile, double pdx, double pdy,double sdx, double sdy) { //1 is projectile hits from below
-
-		//bottom
-		if(projectile.getY()+pdy<=stationary.getMaxY()+sdy&&projectile.getY()>stationary.getMaxY()&&projectile.getX()+pdx<stationary.getMaxX()+sdx&&projectile.getMaxX()+pdx>stationary.getX()+sdx)
-			return 1;
-		//top
-		if(projectile.getMaxY()+pdy>=stationary.getY()+sdy&&projectile.getMaxY()<stationary.getY()&&projectile.getX()+pdx<stationary.getMaxX()+sdx&&projectile.getMaxX()+sdx>stationary.getX()+sdx)
-			return 2;
-		//left
-		if(projectile.getMaxX()+pdx>=stationary.getX()+pdx&&projectile.getMaxX()<stationary.getX()&&projectile.getY()+pdy<stationary.getMaxY()+sdy&&projectile.getMaxY()+pdy>stationary.getY()+sdy)
-			return 3;
-		if(projectile.getX()+pdx<=stationary.getMaxX()+sdx&&projectile.getX()>stationary.getMaxX()&&projectile.getY()+pdy<stationary.getMaxY()+sdy&&projectile.getMaxY()+pdy>stationary.getY()+sdy)
-			return 4;
-			return 0;
-
+		return false;
 	}
 
 	public String getTitle() {
