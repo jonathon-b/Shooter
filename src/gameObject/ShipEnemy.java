@@ -12,7 +12,12 @@ public class ShipEnemy extends Enemy{
 
 	public ShipEnemy(double x, double y, double dx, double dy, double size, GDV5 g) {
 		super(x, y, dx, dy, size);
-		limit=r.nextInt((int)(g.getHeight()/this.dy-1));
+		int xlimit;
+		if(dx<0)
+			xlimit=(int)(x/dx);
+		else
+			xlimit=(int)((g.getWidth()-this.getMaxX())/dx);
+		limit=r.nextInt(Math.min((int)(g.getHeight()/this.dy-1),xlimit));
 	}
 	public void shoot(float bound, ArrayList b){
 	if(r.nextFloat()>bound);
