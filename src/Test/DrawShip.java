@@ -6,10 +6,8 @@ import gameObject.*;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class DrawShip extends GDV5 {
@@ -117,8 +115,8 @@ public class DrawShip extends GDV5 {
 				if(Math.signum(Math.cos(s.angle))==Math.signum(s.dy)){
 					yMod=s.dx/2;
 				}
-				bullets.add(new Bullet(s.rotatedGun[0], 3, Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s));
-				bullets.add(new Bullet(s.rotatedGun[1], 3, Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s));
+				bullets.add(new Bullet(s.rotatedGun[0], Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s,false));
+				bullets.add(new Bullet(s.rotatedGun[1],  Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s,false));
 				if(!sd.isPlaying(0))sd.play(0);
 			re=true;
 		}
@@ -156,10 +154,16 @@ public class DrawShip extends GDV5 {
 
 
 		private void updateEnemies(){
-			for(Enemy e:
-			    enemies) {
-				e.update();
-			}
+				for(Enemy e :
+						enemies) {
+					e.update();
+					if(e instanceof ShipEnemy)
+						((ShipEnemy) e).shoot((float)0.8,bullets);
+					for(Bullet b:
+					    bullets) {
+						e.collisionCheck(b);
+					}
+				}
 		}
 
 	private void drawEnemies(Graphics2D win){
@@ -218,9 +222,9 @@ public class DrawShip extends GDV5 {
 
 	private void addNormalEnemies(int num){
 		for(int i=0;i<num;i++) {
-			int size=40;
-			if(r.nextFloat()>0.99) {
-				enemies.add(new Enemy(r.nextInt(this.getWidth()-size),0,r.nextInt(5)-2,r.nextInt(7)+1,size));
+			int size=60;
+			if(r.nextFloat()>0.992) {
+				enemies.add(new ShipEnemy(r.nextInt(this.getWidth()-size),0,r.nextInt(5)-2,r.nextInt(7)+1,size,this));
 			}
 		}
 	}

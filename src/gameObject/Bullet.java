@@ -7,11 +7,18 @@ import java.awt.geom.Rectangle2D;
 public class Bullet extends Rectangle2D.Double {
 	public static final double baseVel=5;
 	public double dx,dy;
-	public Bullet(Point2D.Double p, double size, double sin, double cos, Ship s){
+	static double size=3;
+	public Bullet(Point2D.Double p, double sin, double cos, Ship s, boolean velControl){
 		super(p.getX()-(size/2),p.getY(),size,size);
-		this.dx=baseVel*sin+s.dx;
-		this.dy=-baseVel*cos+s.dy;
-	}
+		if(!velControl) {
+			this.dx = baseVel * sin + s.dx;
+			this.dy = -baseVel * cos + s.dy;
+		}
+		else{
+			this.dx=cos;
+			this.dy=sin;
+		}
+		}
 	public void update(){
 		this.x+=dx;this.y+=dy;
 	}
