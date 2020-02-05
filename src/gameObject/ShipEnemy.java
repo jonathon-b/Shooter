@@ -14,7 +14,7 @@ public class ShipEnemy extends Enemy{
 		super(x, y, dx, dy, size);
 		int xlimit;
 		if(dx<0)
-			xlimit=(int)(x/dx);
+			xlimit=(int)(x/(-dx));
 		else
 			xlimit=(int)((g.getWidth()-this.getMaxX())/dx);
 		limit=r.nextInt(Math.min((int)(g.getHeight()/this.dy-1),xlimit));
