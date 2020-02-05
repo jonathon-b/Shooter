@@ -180,7 +180,9 @@ public abstract class GDV5 extends Canvas implements Runnable, KeyListener {
 	 * object that is moving dx = projectile's x displacement dy = projectile's y
 	 * displacement
 	 */
-	public static boolean collides(Rectangle2D stationary, Rectangle2D projectile) {
+	public static boolean collides(Rectangle2D r1, Rectangle2D r2) {
+		Rectangle2D stationary=r2,projectile=r1;
+		if(r1.getWidth()*r1.getHeight()>r2.getWidth()*r2.getHeight()) {stationary=r1; projectile=r2;}
 				if(((projectile.getX()>=stationary.getX()&&projectile.getX()<=stationary.getMaxX())||
 				(projectile.getMaxX()<=stationary.getMaxX()&&projectile.getMaxX()>=stationary.getX()))&&(
 						(projectile.getY()>=stationary.getY()&&projectile.getY()<=stationary.getMaxY())||

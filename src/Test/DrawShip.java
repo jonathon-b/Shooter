@@ -239,7 +239,7 @@ public class DrawShip extends GDV5 {
 	public void checkMenuTiles(){
 		for(Bullet i:
 		    bullets) {
-				if(this.collisionDirection(menu[0], i, i.dx, i.dy,0,0)!=0)
+				if(this.collides(menu[0], i))
 					g=GameState.LEVEL1;
 		}
 	}
@@ -247,7 +247,7 @@ public class DrawShip extends GDV5 {
 	void shipCollisionCheck() {
 		for(Enemy e:
 		    enemies) {
-			if(this.collisionDirection(s.hitBox, e,e.dx,e.dy,s.dx,s.dy)!=0){
+			if(this.collides(e, s.hitBox)){
 				e.killEnemy(e.getX(),e.getY());
 				if(s.isAlive()){s.lives--;}
 			}
@@ -308,6 +308,8 @@ public class DrawShip extends GDV5 {
 		drawBullets(win);
 		drawExplosions(win, Color.GREEN);
 		s.fill(win);
+		win.setColor(Color.red);
+		win.draw(s.hitBox);
 		if(g.equals(GameState.MENU)){
 			win.setFont(new Font("GOST COMMON",Font.PLAIN,100));
 			win.setColor(Color.WHITE);
