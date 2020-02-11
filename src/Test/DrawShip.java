@@ -20,7 +20,7 @@ public class DrawShip extends GDV5 {
 
 	static Random r = new Random();
 	boolean re=false;
-	public static ArrayList<ExplosionArray> Explosions = new ArrayList<>();
+	public static ArrayList<ExplosionArray> explosions = new ArrayList<>();
 	public ArrayList<Particle> parts = new ArrayList<>();
 	public ArrayList<Star> stars = new ArrayList<>();
 	public ArrayList<Bullet> bullets = new ArrayList<>();
@@ -42,11 +42,11 @@ public class DrawShip extends GDV5 {
 			rumbleY[i] = 0;
 		}
 		 s= new Ship(7,720,1280,1280/2+5,720,3);
-		 sounds[0]="jonathon_bower_laser.wav";
+		 sounds[0]="jonathon_bower_laser_v3.wav";
 		 sounds[1]="jonathon_bower_explosion.wav";
 		 sd=new SoundDriverHo(sounds,this);
-		 sd.setVolume(0,(float)0.0005);
-		 sd.setVolume(1,6);
+		 //sd.setVolume(0,(float)0.0005);
+		 //sd.setVolume(1,(float)6.0206);
 		 menu[0]= new Rectangle2D.Double(100,200,300,100);
 		 menu[1]= new Rectangle2D.Double();
 		 menu[2]= new Rectangle2D.Double();
@@ -66,11 +66,11 @@ public class DrawShip extends GDV5 {
 		s.update();
 	}
 
-	private void rotateShip(double rotation){
+	private void rotateShip(){
 		if(GDV5.KeysPressed[KeyEvent.VK_A])
-			s.angle -= rotation;
+			s.angle -= Ship.angleStep;
 		if(GDV5.KeysPressed[KeyEvent.VK_D])
-			s.angle += rotation;
+			s.angle += Ship.angleStep;
 	}
 
 	public static void addRumble(int bound){
@@ -96,6 +96,7 @@ public class DrawShip extends GDV5 {
 	private void returnToMenu(){
 		s.lives=3;
 		g=GameState.MENU;
+		bullets.clear();
 		enemies.clear();
 	}
 
@@ -115,8 +116,8 @@ public class DrawShip extends GDV5 {
 				if(Math.signum(Math.cos(s.angle))==Math.signum(s.dy)){
 					yMod=s.dx/2;
 				}
-				bullets.add(new Bullet(s.rotatedGun[0], Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s,false));
-				bullets.add(new Bullet(s.rotatedGun[1],  Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s,false));
+				bullets.add(new Bullet(s.rotatedGun[0], Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s,false,3));
+				bullets.add(new Bullet(s.rotatedGun[1],  Bullet.baseVel*Math.sin(s.angle), Bullet.baseVel*Math.cos(s.angle),s,false,3));
 				if(!sd.isPlaying(0))sd.play(0);
 			re=true;
 		}
@@ -158,10 +159,10 @@ public class DrawShip extends GDV5 {
 						enemies) {
 					e.update();
 					if(e instanceof ShipEnemy)
-						((ShipEnemy) e).shoot((float)0.8,bullets);
+						((ShipEnemy) e).shoot((float)0.99,bullets,s);
 					for(Bullet b:
 					    bullets) {
-						e.collisionCheck(b);
+						if(b.killEnemies()){ e.collisionCheck(b);}
 					}
 				}
 		}
@@ -195,7 +196,7 @@ public class DrawShip extends GDV5 {
 	private void drawBullets(Graphics2D win) {
 		for(Bullet i:
 		    bullets) {
-			i.draw(win, Color.WHITE);
+			i.draw(win, Color.GREEN);
 		}
 	}
 
@@ -252,13 +253,22 @@ public class DrawShip extends GDV5 {
 				if(s.isAlive()){s.lives--;}
 			}
 		}
+		for(Bullet b:
+		    bullets) {
+			if(!b.killEnemies()) {
+				if(this.collides(b, s.hitBox)){
+					if(s.isAlive()) {s.lives--; b.kill=true;}
+					b.explode(explosions);
+				}
+			}
+		}
 		enemies.removeIf(e -> e.isDead());
 		if(!s.isAlive()){returnToMenu();}
 	}
 
 	public void updateExplosions(){
 		for(ExplosionArray e:
-				Explosions) {
+				explosions) {
 			e.update();
 		}
 	}
@@ -266,8 +276,8 @@ public class DrawShip extends GDV5 {
 
 	public void drawExplosions(Graphics2D win, Color c){
 		for(ExplosionArray e:
-				Explosions) {
-			e.fill(win, c);
+				explosions) {
+			e.fill(win);
 		}
 	}
 
@@ -279,7 +289,7 @@ public class DrawShip extends GDV5 {
 	@Override
 	public void update() {
 		controlShip();
-		rotateShip(Math.PI/50);
+		rotateShip();
 		addParts(); //also adds stars
 		moveParts();
 		moveStars();
@@ -288,12 +298,12 @@ public class DrawShip extends GDV5 {
 		stars.removeIf(Star::kill);
 		parts.removeIf(Particle::kill);
 		bullets.removeIf(Bullet::kill);
-		Explosions.removeIf(ExplosionArray::kill);
+		explosions.removeIf(ExplosionArray::kill);
 		if(g.equals(GameState.MENU)){
 			checkMenuTiles();
 		}
 		else{
-			addAstroids();
+			if(!g.equals(GameState.LEVEL1)) addAstroids();
 			addNormalEnemies(1);
 			updateEnemies();
 			shipCollisionCheck();
@@ -306,7 +316,7 @@ public class DrawShip extends GDV5 {
 		drawStars(win);
 		drawParts(win);
 		drawBullets(win);
-		drawExplosions(win, Color.GREEN);
+		drawExplosions(win, Color.MAGENTA);
 		s.fill(win);
 		win.setColor(Color.red);
 		win.draw(s.hitBox);

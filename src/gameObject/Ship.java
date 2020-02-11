@@ -20,7 +20,7 @@ public class Ship extends Polygon{
 	public Point2D.Double rotatedThrust[]=new Point2D.Double[2];
 	double anchorx;
 	double anchory;
-
+	public final static double angleStep = Math.PI/50;
 	static public int[] placeholder={2,4,6,5,4,3,2,1,0};
 	private Arc2D.Double a;
 	private double aHeight=2,aWidth=2,aX=2,aY=0;

@@ -3,6 +3,7 @@ package gameObject;
 import Test.DrawShip;
 import Util.GDV5;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class Enemy extends GameObject{
@@ -20,10 +21,10 @@ public class Enemy extends GameObject{
 
 	public void killEnemy(double x, double y){
 		this.kill=true;
-		DrawShip.Explosions.add(new ExplosionArray(x,y,3,20,40,4));
+		DrawShip.explosions.add(new ExplosionArray(x,y,3,20,40,2, Color.MAGENTA));
 		DrawShip.addRumble(15);
-		if(!DrawShip.sd.isPlaying(1))
-			DrawShip.sd.play(1);
+		//if(!DrawShip.sd.isPlaying(1))
+		DrawShip.sd.play(1);
 	}
 
 	public boolean isDead(){return kill;}
